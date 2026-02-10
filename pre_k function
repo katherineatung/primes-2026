@@ -18,6 +18,6 @@ def pre(k,list1):
 def allPre(k,n):
   list1=Partitions(n).list()
   for i in range(0,len(list1)):
-    if len(list1[i])<k:
+    if len(list1[i])<=k:
       continue
     print("pre_", k, "(", list1[i], ")= ", pre(k,list1[i]))
