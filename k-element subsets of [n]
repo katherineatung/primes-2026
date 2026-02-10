@@ -5,6 +5,9 @@ def subsetsizek(k,n):
       return_list.append([])
     else:
       return_list.append([1])
+  elif k==0:
+    return_list.append([])
+
   else:
     if k<n:
       list1=subsetsizek(k,n-1)
