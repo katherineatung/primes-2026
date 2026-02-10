@@ -1,0 +1,23 @@
+import itertools
+
+#Find pre_k for a given partion (list) as its input
+def pre(k,list1):
+  return_partition=[]
+  list2=list(itertools.combinations(list1,k))
+  for i in range(0,len(list2)):
+    count=1
+    for j in range(0,len(list2[i])):
+      count*=list2[i][j]
+
+    return_partition.append(count)
+
+  return_partition.sort(reverse=True)
+  return return_partition
+
+#Sage code: generate all pre's with their inputs for fixed k
+def allPre(k,n):
+  list1=Partitions(n).list()
+  for i in range(0,len(list1)):
+    if len(list1[i])<k:
+      continue
+    print("pre_", k, "(", list1[i], ")= ", pre(k,list1[i]))
