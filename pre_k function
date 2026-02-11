@@ -21,3 +21,13 @@ def allPre(k,n):
     if len(list1[i])<=k:
       continue
     print("pre_", k, "(", list1[i], ")= ", pre(k,list1[i]))
+
+#Sage code: same as before but add a length condition l so we can examine partitions of same length more easily
+def allPre(k,n,l):
+  list1=Partitions(n).list()
+  for i in range(0,len(list1)):
+    if len(list1[i])<=k:
+      continue
+    if len(list1[i])!=l:
+        continue
+    print("pre_", k, "(", list1[i], ")= ", pre(k,list1[i]))
