@@ -1,0 +1,117 @@
+#Tool to append something to list only if not False
+def norm_append(list1, item):
+    if item!=False:
+        list1.append(item)
+
+#Find weight vector of a pipe dream
+def weightVec(pipe):
+    return_vec=[]
+    for c in range(0,len(pipe[0])):
+        return_vec.append(0)
+        for r in range(0,len(pipe)):
+            if pipe[r][c]==1:
+                return_vec[c]+=1
+                
+    return return_vec
+
+#Ladder move
+def ladder(i,j,m,pipe):
+  #Check if ladder move actually works
+  if pipe[i][j]!=1 or pipe[i][j+1]!=0:
+    return False
+  if pipe[i-m][j]!=0 or pipe[i-m][j+1]!=0:
+    return False
+  for k in range(1,m):
+    if pipe[i-k][j]!=1 or pipe[i-k][j+1]!=1:
+      return False
+  
+  new_pipe=[[0 if i + j <= len(pipe) - 1 else 2 for j in range(len(pipe))] for i in range(len(pipe))]
+  for r in range(0,len(pipe)):
+    for c in range(0,len(pipe)):
+      new_pipe[r][c]=pipe[r][c]
+
+  new_pipe[i][j]=0
+  new_pipe[i-m][j+1]=1
+
+  return new_pipe
+
+#Generate D_{bot}
+def generateDbot(perm):
+    n=len(perm)
+    return_pipe=[[0 if i + j <= n - 1 else 2 for j in range(n)] for i in range(n)]
+    
+    listM=[]
+   
+    for i in range(0,n):
+        listM.append(0)
+        for j in range(i+1,n):
+            if perm[i]>perm[j]:
+                listM[i]+=1
+    
+    for i in range(0,n):
+        for j in range(0,listM[i]):
+            return_pipe[i][j]=1
+    
+    return return_pipe
+
+#Return all reduced pipe dreams
+def allPipeDreams(perm):
+    n=len(perm)
+    dBot=generateDbot(perm)
+    pipe_storage=[[] for _ in range(0,2^n)]
+    return_vec=[]
+    return_vec.append(weightVec(dBot))
+
+    pipe_storage[0].append(dBot)
+
+    for i in range(0,n):
+      for j in range(0,n-i):
+        for m in range(1,i+1):
+          norm_append(pipe_storage[1],ladder(i,j,m,dBot))
+
+    for lvl in range(2,len(pipe_storage)):
+      for pipe_dream in pipe_storage[lvl-1]:
+        for i in range(0,n):
+          for j in range(0,n-i):
+            for m in range(1,i+1):
+              norm_append(pipe_storage[lvl],ladder(i,j,m,pipe_dream))
+        
+      if len(pipe_storage[lvl])==0:
+        continue
+
+    final_pipe_dreams=list(filter(None,pipe_storage))
+    
+
+    
+    return final_pipe_dreams
+
+#Return all weight vectors of pipe dreams
+def allWeightVectors(perm):
+  pipe=allPipeDreams(perm)
+  return_vec=[]
+  for lvl in range(0,len(pipe)):
+    for i in range(0,len(pipe[lvl])):
+      return_vec.append(weightVec(pipe[lvl][i]))
+  
+  return return_vec
+
+#Schubert Polynomial
+def SchubertPolynomial(perm):
+    lst_perm=list(perm.inverse())
+    weights=allWeightVectors(lst_perm)
+    n=perm.length()
+    R=PolynomialRing(ZZ, 'x', n)
+    R.inject_variables()
+    poly=[]
+    for i in range(0,len(weights)):
+        poly.append(1)
+        for j in range(0,len(weights[i])):
+            poly[i]*=var('x{}'.format(j))^weights[i][j]
+            
+    
+    schubert_poly=0
+    for i in range(0,len(poly)):
+        schubert_poly+=poly[i]
+    
+    return schubert_poly
+
