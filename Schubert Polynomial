@@ -54,35 +54,45 @@ def generateDbot(perm):
     
     return return_pipe
 
-#Return all reduced pipe dreams
+#Method for resolving duplicate
+def clean(pipe):
+    return tuple(tuple(row) for row in pipe)
+
+#Finding all reduced pipe dreams
 def allPipeDreams(perm):
     n=len(perm)
     dBot=generateDbot(perm)
-    pipe_storage=[[] for _ in range(0,2^n)]
-    return_vec=[]
-    return_vec.append(weightVec(dBot))
-
+    pipe_storage=[[] for _ in range(0,n*n)]
     pipe_storage[0].append(dBot)
-
+    visited=set()
+    visited.add(clean(dBot))
+    
     for i in range(0,n):
-      for j in range(0,n-i):
-        for m in range(1,i+1):
-          norm_append(pipe_storage[1],ladder(i,j,m,dBot))
-
-    for lvl in range(2,len(pipe_storage)):
-      for pipe_dream in pipe_storage[lvl-1]:
-        for i in range(0,n):
-          for j in range(0,n-i):
+        for j in range(0,n-i):
             for m in range(1,i+1):
-              norm_append(pipe_storage[lvl],ladder(i,j,m,pipe_dream))
-        
-      if len(pipe_storage[lvl])==0:
-        continue
-
-    final_pipe_dreams=list(filter(None,pipe_storage))
+                newPipe=ladder(i,j,m,dBot)
+                if newPipe!=False:
+                    f=clean(newPipe)
+                    if f not in visited:
+                        norm_append(pipe_storage[1],newPipe) 
+                        visited.add(f)
     
-
+    for lvl in range(2,len(pipe_storage)):
+        for pipe_dream in pipe_storage[lvl-1]:
+            for i in range(0,n):
+                for j in range(0,n-i):
+                    for m in range(1,i+1):
+                        newPipe=ladder(i,j,m,pipe_dream)
+                        if newPipe!=False:
+                            f=clean(newPipe)
+                            if f not in visited:
+                                norm_append(pipe_storage[lvl],newPipe) 
+                                visited.add(f)
+        if len(pipe_storage[lvl])==0: 
+            break
     
+    
+    final_pipe_dreams=list(filter(None,pipe_storage)) 
     return final_pipe_dreams
 
 #Return all weight vectors of pipe dreams
