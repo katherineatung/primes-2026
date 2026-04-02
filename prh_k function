@@ -1,0 +1,31 @@
+import itertools
+import math
+
+def homo_par(list1,k):
+    list2 = itertools.combinations_with_replacement(list1, k)
+    terms = [math.prod(x) for x in list2]
+    return terms
+
+def prh(list1,k):
+  return_partition=homo_par(list1,k)
+  return_partition.sort(reverse=True)
+  return return_partition
+
+def prh_injectivity(n,k,mlen):
+    lambdas = Partitions(n, min_length = mlen, max_length = mlen)
+    outputs = []
+    for lam in lambdas:
+        preek = prh(lam,k)
+        if preek in outputs:
+            print(lam)
+            print(f"Injectivity fails with {n}, pre{k}, partition length {mlen}, and output {preek}")
+            return False
+        outputs.append(preek)
+    return True
+
+for k in range(3,10):
+    for n in range(k,20):
+        for mlen in range(k+1,n):
+            print(f"k = {k}, n = {n}, partition length = {mlen}")
+            print(prh_injectivity(n,k,mlen))
+
