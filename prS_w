@@ -16,19 +16,17 @@ def prS(lam,w):
 def prS_injectivity(n,w,mlen):
     lambdas = Partitions(n, min_length = mlen)
     lambda_new=[]
-    if mlen < len(w)-1:
-        print("Cannot evaluate Schubert Polynomial")
-        return
-    if mlen == len(w)-1:
-        lambda_new = [tuple(p) + (0,) for p in lambdas]
-    else:
-        lambda_new= [tuple(p) for p in lambdas]
+    for p in lambdas:
+        if len(p) == len(w)-1:
+            lambda_new.append(tuple(p) + (0,))
+        else:
+            lambda_new.append(tuple(p))
     outputs = []
     for lam in lambda_new:
         prSw = prS(lam,w)
         if prSw in outputs:
             #print(lam)
-            #print(f"Injectivity fails with {n}, prS{w}, partition length {mlen}, and output {prSw}")
+            #print(f"Injectivity fails with {n}, prS{w}, partition length {len(lam)}, and output {prSw}")
             return False
         outputs.append(prSw)
     return True
@@ -37,18 +35,18 @@ def prS_injectivity(n,w,mlen):
     
 
 
-
-
-P=Permutations(3)
+#Checks for number of times injectivity holds for each w
+m=4
+P=Permutations(m)
 poset_count=[]
 for w in P:
     poset_count.append(0)
-    for n in range(2,10):
-        for mlen in range(3,n):
-            
+    for n in range(m-1,10):
             #print(f"w = {w}, n = {n}, partition length = {mlen}")
             #print(prS_injectivity(n,w,mlen))
-            if prS_injectivity(n,w,mlen):
+            if prS_injectivity(n,w,m-1):
                 poset_count[-1]+=1
+    if poset_count[-1]==1:
+        poset_count[-1]-=1
     print(f"Permutation {w} is injective {poset_count[-1]} times.")
 
