@@ -1,0 +1,54 @@
+def summands(poly, vals):
+    result = []
+    for exps, c in poly.dict().items():
+        poly_temp = 1
+        for i, e in enumerate(exps):
+            poly_temp*=vals[i]**e
+           
+        result.extend([poly_temp]*int(c))
+    return sorted(result, reverse=True)
+
+def prS(lam,w):
+    X=SchubertPolynomialRing(ZZ)
+    poly=X(w).expand()
+    return summands(poly,lam)
+
+def prS_injectivity(n,w,mlen):
+    lambdas = Partitions(n, min_length = mlen)
+    lambda_new=[]
+    if mlen < len(w)-1:
+        print("Cannot evaluate Schubert Polynomial")
+        return
+    if mlen == len(w)-1:
+        lambda_new = [tuple(p) + (0,) for p in lambdas]
+    else:
+        lambda_new= [tuple(p) for p in lambdas]
+    outputs = []
+    for lam in lambda_new:
+        prSw = prS(lam,w)
+        if prSw in outputs:
+            #print(lam)
+            #print(f"Injectivity fails with {n}, prS{w}, partition length {mlen}, and output {prSw}")
+            return False
+        outputs.append(prSw)
+    return True
+
+
+    
+
+
+
+
+P=Permutations(3)
+poset_count=[]
+for w in P:
+    poset_count.append(0)
+    for n in range(2,10):
+        for mlen in range(3,n):
+            
+            #print(f"w = {w}, n = {n}, partition length = {mlen}")
+            #print(prS_injectivity(n,w,mlen))
+            if prS_injectivity(n,w,mlen):
+                poset_count[-1]+=1
+    print(f"Permutation {w} is injective {poset_count[-1]} times.")
+
