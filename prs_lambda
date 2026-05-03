@@ -1,12 +1,19 @@
+def summands(poly, vals):
+    result = []
+    for exps, c in poly.dict().items():
+        poly_temp = 1
+        for i, e in enumerate(exps):
+            poly_temp*=vals[i]**e
+           
+        result.extend([poly_temp]*int(c))
+    return sorted(result, reverse=True)
+
 def prs(lambda1, lambda2):
     s=SymmetricFunctions(QQ).s()
-    a=s(lambda1)
-    n=len(lambda2)
-    poly=a.expand(n)
-    terms=poly.terms()
-    return_partition=[t(*tuple(lambda2)) for t in terms]
-    return_partition.sort(reverse=True)
+    poly=s(lambda1).expand(len(lambda2))
+    return_partition=summands(poly,lambda2)
     return return_partition
+    
 
 def allPrs(n,lambda1,mlen):
     list1=Partitions(n)
@@ -15,6 +22,10 @@ def allPrs(n,lambda1,mlen):
             continue
         print("prs_", lambda1, "(", list1[i], ")= ", prs(lambda1,list1[i]))
 
+        
+lambda1=Partition([2,1])        
+allPrs(5,lambda1,3)
+
 def prs_injectivity(n,lambda1,mlen):
     lambdas = Partitions(n, min_length = mlen, max_length = mlen)
     outputs = []
@@ -22,19 +33,20 @@ def prs_injectivity(n,lambda1,mlen):
         pree = prs(lambda1,lam)
         if pree in outputs:
             print(lam)
-            print(f"Injectivity fails with {n}, pre{k}, partition length {mlen}, and output {preek}")
+            print(f"Injectivity fails with {n}, prs{lambda1}, partition length {mlen}, and output {pree}")
             return False
         outputs.append(pree)
     return True
 
-allPrs(10,Partition([3,2,1]),4)
- 
-# for lambda1 in Partitions(m):
-#     for n in range(m,10):
-#         for mlen in range(m+1,n):
-#             print(f"lambda = {lambda1}, n = {n}, partition length = {mlen}")
-#             print(prs_injectivity(n,lambda1,mlen))
 
-    
-    
-    
+m=4
+n=3
+for lam1 in Partitions(m):
+    for mu1 in Partitions(outer=lam1):
+        if mu1==lam1:
+            break
+        lambda1=lam1 / mu1
+        for n in range(m,10):
+            for mlen in range(m+1,n):
+                print(f"lambda = {lambda1}, n = {n}, partition length = {mlen}")
+                print(prs_injectivity(n,lambda1,mlen))
