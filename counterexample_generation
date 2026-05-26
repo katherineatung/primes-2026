@@ -1,0 +1,24 @@
+def f(c,e):
+  num=float(3*e*c**3-2*c**4-c*e**3)
+  denom=float(3*c*e**2-c**3-2*e**3)
+  if denom!=0 and ((num>0 and denom>0) or (num<0 and denom<0)):
+    return num/denom
+  else:
+    return 5.5
+
+
+max_c=30
+max_e=30
+
+for c in range(1,max_c):
+  for e in range(1,max_e):
+    count=f(c,e)
+    if count.is_integer():
+      f_val=int(count)
+      a=e**3/c**2
+      b=f_val*e**2/c**2
+      d=f_val*e**3/c**3
+      if a.is_integer() and b.is_integer() and d.is_integer():
+        print("Valid solution is ")
+        print([a,b,b,b,c,c])
+        print([d,d,e,e,e,f_val])
