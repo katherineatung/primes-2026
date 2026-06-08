@@ -1,16 +1,19 @@
 import itertools
 import math
 
+%Generate summands of h_k
 def homo_par(list1,k):
     list2 = itertools.combinations_with_replacement(list1, k)
     terms = [math.prod(x) for x in list2]
     return terms
 
+%Sort summands of h_k to create prh
 def prh(list1,k):
   return_partition=homo_par(list1,k)
   return_partition.sort(reverse=True)
   return return_partition
 
+%Check injectivity of prh for fixed n,k, and length
 def prh_injectivity(n,k,mlen):
     lambdas = Partitions(n, min_length = mlen, max_length = mlen)
     outputs = []
