@@ -1,3 +1,6 @@
+%An experimentation with the function prS_w, which was the analog of pre_k, but over Schubert polynomials
+%NOTE: This function was not mentioned in the final paper
+
 def summands(poly, vals):
     result = []
     for exps, c in poly.dict().items():
