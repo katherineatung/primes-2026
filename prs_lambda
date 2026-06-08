@@ -1,3 +1,4 @@
+%Return summands of s_lambda
 def summands(poly, vals):
     result = []
     for exps, c in poly.dict().items():
@@ -8,13 +9,14 @@ def summands(poly, vals):
         result.extend([poly_temp]*int(c))
     return sorted(result, reverse=True)
 
+%Find prs_{lambda_1}(lambda_2)
 def prs(lambda1, lambda2):
     s=SymmetricFunctions(QQ).s()
     poly=s(lambda1).expand(len(lambda2))
     return_partition=summands(poly,lambda2)
     return return_partition
     
-
+%Visualize all s_lambdas of given n and given length
 def allPrs(n,lambda1,mlen):
     list1=Partitions(n)
     for i in range(0,len(list1)):
@@ -26,6 +28,7 @@ def allPrs(n,lambda1,mlen):
 lambda1=Partition([2,1])        
 allPrs(5,lambda1,3)
 
+%Check general injectivity of prs_lambda
 def prs_injectivity(n,lambda1,mlen):
     lambdas = Partitions(n, min_length = mlen, max_length = mlen)
     outputs = []
